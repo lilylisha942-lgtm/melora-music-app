@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melora - Music Discovery & Player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🎵</span>
+                <span class="logo-text">Melora</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active" data-page="home"><span class="nav-icon">🏠</span> Home</a></li>
+                <li><a href="#search" class="nav-link" data-page="search"><span class="nav-icon">🔎</span> Search</a></li>
+                <li><a href="#browse" class="nav-link" data-page="browse"><span class="nav-icon">🎵</span> Browse</a></li>
+                <li><a href="#hum" class="nav-link" data-page="hum"><span class="nav-icon">🎤</span> Hum to Find</a></li>
+                <li><a href="#favorites" class="nav-link" data-page="favorites"><span class="nav-icon">❤️</span> Favorites</a></li>
+                <li><a href="#library" class="nav-link" data-page="library"><span class="nav-icon">📚</span> My Library</a></li>
+                <li><a href="#profile" class="nav-link" data-page="profile"><span class="nav-icon">👤</span> Profile</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <button class="settings-btn" data-page="settings"><span>⚙️</span> Settings</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <section id="home-page" class="page active">
+                <div class="page-header">
+                    <h1>Welcome to Melora</h1>
+                    <p>Discover your next favorite song</p>
+                </div>
+
+                <div class="home-grid">
+                    <div class="featured-section">
+                        <h2>Featured Songs</h2>
+                        <div class="songs-grid" id="featured-songs"></div>
+                    </div>
+
+                    <div class="recommended-section">
+                        <h2>Recommended for You</h2>
+                        <div class="songs-grid" id="recommended-songs"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Page -->
+            <section id="search-page" class="page">
+                <div class="page-header">
+                    <h1>Search Music</h1>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search songs, artists, playlists...">
+                </div>
+                <div id="search-results" class="songs-grid"></div>
+            </section>
+
+            <!-- Browse Page -->
+            <section id="browse-page" class="page">
+                <div class="page-header">
+                    <h1>Browse by Genre</h1>
+                </div>
+                <div class="genres-grid" id="genres-grid"></div>
+                <div class="songs-grid" id="browse-songs"></div>
+            </section>
+
+            <!-- Hum to Find Page -->
+            <section id="hum-page" class="page">
+                <div class="hum-hero">
+                    <h1>Can't remember the song?</h1>
+                    <p>Hum the melody and let Melora try to find it.</p>
+                    <p class="hum-subtitle">Melody Match — Prototype</p>
+                </div>
+
+                <div class="hum-container">
+                    <div class="microphone-section">
+                        <div class="particles" id="particles"></div>
+                        <button class="mic-button" id="mic-button">
+                            <span class="mic-icon">🎤</span>
+                        </button>
+                        <p class="mic-status" id="mic-status">Start Humming</p>
+                        <p class="mic-timer" id="mic-timer"></p>
+                    </div>
+
+                    <div class="waveform-container">
+                        <canvas id="waveform-canvas"></canvas>
+                    </div>
+
+                    <div class="hum-results" id="hum-results"></div>
+                </div>
+            </section>
+
+            <!-- Favorites Page -->
+            <section id="favorites-page" class="page">
+                <div class="page-header">
+                    <h1>❤️ Your Favorites</h1>
+                    <p id="favorites-count">0 songs saved</p>
+                </div>
+                <div class="songs-grid" id="favorites-songs"></div>
+            </section>
+
+            <!-- My Library Page -->
+            <section id="library-page" class="page">
+                <div class="page-header">
+                    <h1>📚 My Library</h1>
+                </div>
+                <div class="library-tabs">
+                    <button class="tab-btn active" data-tab="playlists">Playlists</button>
+                    <button class="tab-btn" data-tab="downloaded">Downloaded</button>
+                </div>
+                <div id="playlists-content" class="tab-content active"></div>
+                <div id="downloaded-content" class="tab-content"></div>
+            </section>
+
+            <!-- Profile Page -->
+            <section id="profile-page" class="page">
+                <div class="profile-header">
+                    <div class="profile-card">
+                        <div class="profile-avatar-container">
+                            <img id="profile-avatar" class="profile-avatar" src="https://via.placeholder.com/150" alt="Profile">
+                            <button class="change-avatar-btn" id="change-avatar-btn">📷</button>
+                            <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="profile-info">
+                            <h1 id="profile-name">Music Lover</h1>
+                            <p id="profile-bio">Your music journey, your way.</p>
+                            <p class="profile-genre" id="profile-genre">Favorite Genre: Pop</p>
+                        </div>
+
+                        <button class="edit-profile-btn" id="edit-profile-btn">Edit Profile</button>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Modal -->
+                <div id="edit-profile-modal" class="modal">
+                    <div class="modal-content">
+                        <button class="modal-close">&times;</button>
+                        <h2>Edit Profile</h2>
+                        <form id="edit-profile-form">
+                            <div class="form-group">
+                                <label>Display Name</label>
+                                <input type="text" id="edit-name" placeholder="Your name">
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea id="edit-bio" placeholder="Tell us about your music taste"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Favorite Genre</label>
+                                <select id="edit-genre">
+                                    <option value="Pop">Pop</option>
+                                    <option value="R&B">R&B</option>
+                                    <option value="Acoustic">Acoustic</option>
+                                    <option value="Rock">Rock</option>
+                                    <option value="Lo-fi">Lo-fi</option>
+                                    <option value="Classical">Classical</option>
+                                    <option value="Indie">Indie</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎵</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="stat-songs-played">0</div>
+                            <div class="stat-label">Songs Played</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❤️</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="stat-favorites">0</div>
+                            <div class="stat-label">Favorite Songs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="stat-playlists">0</div>
+                            <div class="stat-label">Playlists</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎤</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="stat-hum-searches">0</div>
+                            <div class="stat-label">Humming Searches</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite Genres Section -->
+                <div class="favorite-genres">
+                    <h2>Your Favorite Genres</h2>
+                    <div class="genre-chips" id="genre-chips"></div>
+                </div>
+
+                <!-- Recently Played -->
+                <div class="recently-played">
+                    <h2>Recently Played</h2>
+                    <div class="songs-list" id="recently-played-list"></div>
+                </div>
+
+                <!-- Favorite Artists -->
+                <div class="favorite-artists">
+                    <h2>Favorite Artists</h2>
+                    <div class="artists-grid" id="favorite-artists-grid"></div>
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section id="settings-page" class="page">
+                <div class="page-header">
+                    <h1>⚙️ Settings</h1>
+                </div>
+                <div class="settings-grid">
+                    <div class="settings-section">
+                        <h2>Playback</h2>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="autoplay-toggle" checked>
+                                Autoplay next song
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="notifications-toggle" checked>
+                                Enable notifications
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Display</h2>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="dark-mode-toggle" checked>
+                                Dark mode
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="animated-bg-toggle" checked>
+                                Animated backgrounds
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h2>Data</h2>
+                        <button class="btn-secondary" id="clear-data-btn">Clear All Data</button>
+                        <button class="btn-secondary" id="export-data-btn">Export Data</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Desktop CD Player -->
+        <div id="cd-player" class="cd-player">
+            <button class="cd-minimize-btn" id="cd-minimize-btn">−</button>
+            
+            <div class="cd-player-content">
+                <div class="cd-display">
+                    <div class="cd-vinyl">
+                        <img id="cd-album-art" class="cd-album-art" src="https://via.placeholder.com/300" alt="Album Art">
+                        <div class="cd-center-circle"></div>
+                        <div class="cd-reflection"></div>
+                    </div>
+                    <div class="equalizer" id="equalizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+
+                <div class="cd-info">
+                    <div class="cd-title" id="cd-title">No Song Playing</div>
+                    <div class="cd-artist" id="cd-artist">Select a song to play</div>
+                    <div class="cd-time">
+                        <span id="cd-current-time">0:00</span> / <span id="cd-total-time">0:00</span>
+                    </div>
+                </div>
+
+                <div class="cd-progress">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="cd-progress-bar"></div>
+                        <input type="range" id="cd-progress-slider" class="progress-slider" min="0" max="100" value="0">
+                    </div>
+                </div>
+
+                <div class="cd-controls">
+                    <button class="cd-btn" id="cd-prev-btn">⏮</button>
+                    <button class="cd-btn cd-play-btn" id="cd-play-btn">▶️</button>
+                    <button class="cd-btn" id="cd-next-btn">⏭</button>
+                    <button class="cd-btn" id="cd-favorite-btn">🤍</button>
+                    <div class="volume-control">
+                        <span>🔊</span>
+                        <input type="range" id="cd-volume-slider" class="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compact Player (when minimized) -->
+        <div id="compact-player" class="compact-player" style="display: none;">
+            <button class="compact-expand-btn" id="compact-expand-btn"></button>
+            <div class="compact-info">
+                <img id="compact-album-art" class="compact-album-art" src="https://via.placeholder.com/40" alt="Album">
+                <div class="compact-text">
+                    <div class="compact-title" id="compact-title">No Song</div>
+                    <div class="compact-artist" id="compact-artist">Select a song</div>
+                </div>
+            </div>
+            <button class="compact-play-btn" id="compact-play-btn">▶️</button>
+            <button class="compact-next-btn" id="compact-next-btn">⏭</button>
+            <button class="compact-fav-btn" id="compact-fav-btn">🤍</button>
+        </div>
+
+        <!-- Mobile Player -->
+        <div id="mobile-player" class="mobile-player">
+            <div class="mobile-player-content" id="mobile-player-content">
+                <img id="mobile-album-art" class="mobile-album-art" src="https://via.placeholder.com/50" alt="Album">
+                <div class="mobile-player-info">
+                    <div class="mobile-title" id="mobile-title">No Song</div>
+                    <div class="mobile-artist" id="mobile-artist">Select a song</div>
+                </div>
+                <div class="mobile-controls">
+                    <button class="mobile-play-btn" id="mobile-play-btn">▶️</button>
+                    <button class="mobile-next-btn" id="mobile-next-btn">⏭</button>
+                    <button class="mobile-fav-btn" id="mobile-fav-btn">🤍</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Screen Mobile Player -->
+        <div id="mobile-full-player" class="mobile-full-player" style="display: none;">
+            <button class="close-full-player" id="close-full-player">✕</button>
+            <div class="mobile-full-content">
+                <img id="mobile-full-album-art" class="mobile-full-album-art" src="https://via.placeholder.com/300" alt="Album">
+                <div class="mobile-full-info">
+                    <h2 id="mobile-full-title">No Song</h2>
+                    <p id="mobile-full-artist">Select a song</p>
+                </div>
+                <div class="mobile-full-progress">
+                    <input type="range" id="mobile-full-progress" class="progress-slider" min="0" max="100" value="0">
+                    <div class="time-display">
+                        <span id="mobile-full-current">0:00</span> / <span id="mobile-full-duration">0:00</span>
+                    </div>
+                </div>
+                <div class="mobile-full-controls">
+                    <button class="mobile-full-btn" id="mobile-full-prev">⏮</button>
+                    <button class="mobile-full-btn mobile-full-play" id="mobile-full-play">▶️</button>
+                    <button class="mobile-full-btn" id="mobile-full-next">⏭</button>
+                </div>
+                <button class="mobile-full-fav" id="mobile-full-fav">🤍 Add to Favorites</button>
+            </div>
+        </div>
+
+        <!-- Hidden Audio Element -->
+        <audio id="audio-player"></audio>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="player.js"></script>
+    <script src="hum-detector.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
